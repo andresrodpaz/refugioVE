@@ -9,6 +9,13 @@ import { createClient } from '@/lib/supabase/client';
 import { Refugio, Paciente, CentroAcopio } from '@/lib/types';
 import { ESTADO_COLORS, ESTADO_LABELS, CONDICION_COLORS, CONDICION_LABELS } from '@/lib/constants';
 import Badge from '@/components/ui/Badge';
+import {
+  verificarRefugioAction,
+  eliminarRefugioAction,
+  eliminarPacienteAction,
+  verificarCentroAction,
+  eliminarCentroAction
+} from './actions';
 
 export default function AdminPanel() {
   const [refugios, setRefugios] = useState<Refugio[]>([]);
@@ -38,71 +45,60 @@ export default function AdminPanel() {
 
   async function verificarRefugio(id: string) {
     setLoadingId(id);
-    const supabase = createClient();
-    const { error } = await supabase
-      .from('refugios')
-      .update({ verificado: true })
-      .eq('id', id);
-    if (error) {
-      toast.error('Error al verificar');
-    } else {
+    try {
+      await verificarRefugioAction(id);
       setRefugios((prev) => prev.map((r) => (r.id === id ? { ...r, verificado: true } : r)));
       toast.success('Refugio verificado');
+    } catch (error) {
+      toast.error('Error al verificar');
     }
     setLoadingId(null);
   }
 
   async function eliminarRefugio(id: string) {
     setLoadingId(id);
-    const supabase = createClient();
-    const { error } = await supabase.from('refugios').delete().eq('id', id);
-    if (error) {
-      toast.error('Error al eliminar');
-    } else {
+    try {
+      await eliminarRefugioAction(id);
       setRefugios((prev) => prev.filter((r) => r.id !== id));
       toast.success('Refugio eliminado');
+    } catch (error) {
+      toast.error('Error al eliminar');
     }
     setLoadingId(null);
   }
 
   async function eliminarPaciente(id: string) {
     setLoadingId(id);
-    const supabase = createClient();
-    const { error } = await supabase.from('pacientes').delete().eq('id', id);
-    if (error) {
-      toast.error('Error al eliminar');
-    } else {
+    try {
+      await eliminarPacienteAction(id);
       setPacientes((prev) => prev.filter((p) => p.id !== id));
       toast.success('Registro eliminado');
+    } catch (error) {
+      toast.error('Error al eliminar');
     }
     setLoadingId(null);
   }
 
   async function verificarCentro(id: number) {
     setLoadingId(String(id));
-    const supabase = createClient();
-    const { error } = await supabase
-      .from('centros_acopio')
-      .update({ verificado: true })
-      .eq('id', id);
-    if (error) {
-      toast.error('Error al verificar');
-    } else {
+    try {
+      await verificarCentroAction(id);
       setCentros((prev) => prev.map((c) => (c.id === id ? { ...c, verificado: true } : c)));
       toast.success('Centro de acopio verificado');
+    } catch (error) {
+      toast.error('Error al verificar');
     }
     setLoadingId(null);
   }
 
   async function eliminarCentro(id: number) {
     setLoadingId(String(id));
-    const supabase = createClient();
-    const { error } = await supabase.from('centros_acopio').delete().eq('id', id);
-    if (error) {
-      toast.error('Error al eliminar');
-    } else {
+    try {
+      await eliminarCentroAction(id);
       setCentros((prev) => prev.filter((c) => c.id !== id));
       toast.success('Centro de acopio eliminado');
+    } catch (error) {
+      toast.error('Error al eliminar');
     }
     setLoadingId(null);
   }

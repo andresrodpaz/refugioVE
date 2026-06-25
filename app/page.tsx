@@ -37,7 +37,7 @@ export default function Home() {
               </div>
             </Link>
 
-            {/* Card 2: Pacientes */}
+            {/* Card 2: Pacientes
             <Link
               href="/pacientes"
               className="group bg-[#1e293b] border border-white/10 hover:border-[#DC143C]/50 rounded-2xl p-5 transition-all hover:scale-[1.01] shadow-lg flex flex-col justify-between"
@@ -53,9 +53,9 @@ export default function Home() {
                 Ingresos y reportes <ArrowRight size={14} />
               </div>
             </Link>
+            */}
 
-
-            {/* Card 3: Buscar Personas */}
+            {/* Card 3: Buscar Personas
             <Link
               href="/buscar-personas"
               className="group bg-[#1e293b] border border-white/10 hover:border-[#DC143C]/50 rounded-2xl p-5 transition-all hover:scale-[1.01] shadow-lg flex flex-col justify-between"
@@ -71,6 +71,7 @@ export default function Home() {
                 Buscar personas <ArrowRight size={14} />
               </div>
             </Link>
+            */}
 
             {/* Card 4: Centros de Acopio */}
             <Link
@@ -89,7 +90,7 @@ export default function Home() {
               </div>
             </Link>
 
-            {/* Card 5: Emergencias */}
+            {/* Card 5: Emergencias
             <Link
               href="/emergencias"
               className="group bg-[#1e293b] border border-white/10 hover:border-[#DC143C]/50 rounded-2xl p-5 transition-all hover:scale-[1.01] shadow-lg flex flex-col justify-between"
@@ -105,6 +106,7 @@ export default function Home() {
                 Ver líneas <ArrowRight size={14} />
               </div>
             </Link>
+            */}
           </div>
         </section>
 
@@ -158,6 +160,7 @@ export default function Home() {
                       <span className="font-bold text-white">Reportar un refugio</span> — si conoces un punto habilitado para recibir familias, publícalo en segundos para que otros lo encuentren.
                     </p>
                   </li>
+                  {/*
                   <li className="flex items-start gap-3">
                     <Search className="text-indigo-400 shrink-0 mt-0.5" size={18} />
                     <p className="text-white/85 text-xs md:text-sm leading-relaxed">
@@ -170,18 +173,21 @@ export default function Home() {
                       <span className="font-bold text-white">Registrar pacientes</span> — canal para que médicos y enfermeros reporten ingresos en hospitales y faciliten la localización a familiares.
                     </p>
                   </li>
+                  */}
                   <li className="flex items-start gap-3">
                     <Package className="text-[#f1c40f] shrink-0 mt-0.5" size={18} />
                     <p className="text-white/85 text-xs md:text-sm leading-relaxed">
                       <span className="font-bold text-white">Centros de acopio</span> — puntos habilitados para recibir y distribuir ayuda. Si conoces uno, publícalo en segundos para que más personas puedan acceder.
                     </p>
                   </li>
+                  {/*
                   <li className="flex items-start gap-3">
                     <Phone className="text-[#DC143C] shrink-0 mt-0.5" size={18} />
                     <p className="text-white/85 text-xs md:text-sm leading-relaxed">
                       <span className="font-bold text-white">Llamar directamente</span> — todos los números de emergencia, ambulancias y bomberos de Venezuela en un solo lugar, tappables desde el teléfono.
                     </p>
                   </li>
+                  */}
                 </ul>
               </div>
             </div>
