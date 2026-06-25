@@ -239,4 +239,63 @@ VALUES
 )
 ON CONFLICT DO NOTHING;
 
+-- Centros de Acopio Exterior table DDL
+CREATE TABLE IF NOT EXISTS centros_acopio_exterior (
+    id SERIAL PRIMARY KEY,
+    nombre TEXT NOT NULL,
+    direccion TEXT NOT NULL,
+    ciudad TEXT NOT NULL,
+    pais TEXT NOT NULL,
+    que_donar TEXT,
+    lat NUMERIC(10,7),
+    lng NUMERIC(10,7),
+    reportado_por TEXT,
+    verificado BOOLEAN DEFAULT false,
+    notas TEXT,
+    creado_en TIMESTAMP DEFAULT NOW()
+);
 
+-- RLS policies for centros_acopio_exterior
+ALTER TABLE centros_acopio_exterior ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "lectura_publica_centros_exterior" ON centros_acopio_exterior FOR SELECT USING (true);
+CREATE POLICY "insercion_publica_centros_exterior" ON centros_acopio_exterior FOR INSERT WITH CHECK (true);
+
+-- Seed data for centros_acopio_exterior
+INSERT INTO centros_acopio_exterior (
+    nombre,
+    direccion,
+    ciudad,
+    pais,
+    que_donar,
+    lat,
+    lng,
+    reportado_por,
+    verificado,
+    notas
+)
+VALUES
+(
+    'Asociación Venezolana en Madrid',
+    'Calle de la Princesa 25',
+    'Madrid',
+    'España',
+    'Medicinas, ropa de invierno, alimentos no perecederos',
+    40.4285,
+    -3.7147,
+    'comunidad_madrid',
+    true,
+    'Abierto de 9am a 6pm'
+),
+(
+    'Fundación Ayuda a Venezuela',
+    '123 Brickell Ave',
+    'Miami',
+    'Estados Unidos',
+    'Suministros médicos de primeros auxilios',
+    25.7617,
+    -80.1918,
+    'venezolanos_miami',
+    true,
+    'Reciben donaciones los fines de semana'
+)
+ON CONFLICT DO NOTHING;

@@ -68,3 +68,18 @@ export interface CentroAcopio {
   notas: string | null;
   creado_en: string;
 }
+
+export interface CentroAcopioExterior {
+  id: number;
+  nombre: string;
+  direccion: string;
+  ciudad: string;
+  pais: string;
+  que_donar: string | null;
+  lat: number | null;
+  lng: number | null;
+  reportado_por: string | null;
+  verificado: boolean;
+  notas: string | null;
+  creado_en: string;
+}

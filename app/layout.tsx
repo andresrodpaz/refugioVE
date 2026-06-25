@@ -6,7 +6,7 @@ import Navbar from '@/components/ui/Navbar';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'RefugioVE — Mapa de refugios y pacientes',
+  title: 'RefugioVE — Mapa de refugios y centros de acopio',
   description:
     'Coordinacion ciudadana en respuesta al terremoto de Venezuela del 24 de junio 2026. Reporta refugios, busca familiares hospitalizados.',
   manifest: '/favicon/site.webmanifest',

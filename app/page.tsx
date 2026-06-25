@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#0f172a] text-white py-12 px-4 md:py-20 pb-24 md:pb-16 flex flex-col items-center">
       <div className="max-w-4xl w-full flex flex-col gap-16">
-        
+
         {/* Hero & Navigation Grid */}
         <section className="text-center max-w-xl mx-auto w-full">
           <div className="text-5xl mb-4">🇻🇪</div>
@@ -114,14 +114,14 @@ export default function Home() {
             <Info className="text-[#DC143C]" size={22} />
             <h2 className="text-2xl font-black tracking-tight text-white">Sobre RefugioVE</h2>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Left Col: Description & How it works */}
             <div className="space-y-6">
               <p className="text-white/80 text-sm md:text-base leading-relaxed">
                 RefugioVE nació horas después del terremoto del 24 de junio de 2026 como respuesta a una necesidad concreta: miles de personas necesitaban encontrar un lugar seguro, localizar a un familiar o simplemente saber a quién llamar, y no había un lugar único donde buscar esa información. La plataforma es de uso libre, funciona en cualquier teléfono con internet y se actualiza en tiempo real gracias a los reportes de la propia comunidad.
               </p>
-              
+
               <div className="space-y-2">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
                   Cómo funciona
@@ -164,7 +164,7 @@ export default function Home() {
                       <span className="font-bold text-white">Buscar a alguien</span> — si no tienes noticias de un familiar o conocido, publica su nombre y la comunidad te ayuda a localizarlo.
                     </p>
                   </li>
-                   <li className="flex items-start gap-3">
+                  <li className="flex items-start gap-3">
                     <Hospital className="text-blue-400 shrink-0 mt-0.5" size={18} />
                     <p className="text-white/85 text-xs md:text-sm leading-relaxed">
                       <span className="font-bold text-white">Registrar pacientes</span> — canal para que médicos y enfermeros reporten ingresos en hospitales y faciliten la localización a familiares.
@@ -211,14 +211,14 @@ export default function Home() {
                 </p>
               </div>
               <div className="mt-5">
-                <a
+                {/* <a
                   href="https://twitter.com/intent/tweet?text=RefugioVE%20-%20Mapa%20de%20refugios%20y%20pacientes%20afectados%20por%20el%20terremoto%20en%20Venezuela%202026&url=https%3A%2F%2Frefugiove.app"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-1.5 w-full bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/20 py-2 rounded-lg text-xs font-bold transition-all active:translate-y-px"
                 >
                   Compartir en X →
-                </a>
+                </a> */}
               </div>
             </div>
 
@@ -230,18 +230,18 @@ export default function Home() {
                   <h3 className="font-bold text-white text-base">Reporta lo que sabes</h3>
                 </div>
                 <p className="text-white/60 text-xs md:text-sm leading-relaxed">
-                  Si tienes información sobre un edificio colapsado o una persona desaparecida, cada reporte ayuda a coordinar la respuesta. No necesitas estar seguro de todo.
+                  Si tienes información sobre un refugio, centro de acopio o una persona desaparecida, cada reporte ayuda a coordinar la respuesta. No necesitas estar seguro de todo.
                 </p>
               </div>
               <div className="mt-5">
-                <a
-                  href="https://ee.kobotoolbox.org/x/eaEmQ9YW"
+                {/* <a
+                  href=""
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-1.5 w-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 py-2 rounded-lg text-xs font-bold transition-all active:translate-y-px"
                 >
                   Ir al formulario →
-                </a>
+                </a> */}
               </div>
             </div>
 
@@ -257,12 +257,12 @@ export default function Home() {
                 </p>
               </div>
               <div className="mt-5">
-                <a
+                {/* <a
                   href="mailto:refugiove.app@outlook.com"
                   className="inline-flex items-center justify-center gap-1.5 w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 py-2 rounded-lg text-xs font-bold transition-all active:translate-y-px"
                 >
                   Escribirnos →
-                </a>
+                </a> */}
               </div>
             </div>
           </div>
