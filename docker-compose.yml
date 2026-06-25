@@ -1,0 +1,17 @@
+services:
+  refugiove:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Override the admin panel password at build time if needed
+        NEXT_PUBLIC_ADMIN_PASSWORD: ${NEXT_PUBLIC_ADMIN_PASSWORD:-admin123}
+    image: refugiove:latest
+    container_name: refugiove
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+    # No external database needed — data is stored in the browser's localStorage.
