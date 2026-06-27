@@ -1,7 +1,20 @@
+import { createClient } from '@/lib/supabase/server';
 import Link from 'next/link';
-import { MapPin, Hospital, ArrowRight, Search, Phone, Share2, FileText, CheckCircle, Megaphone, Info, Package } from 'lucide-react';
+import { MapPin, Hospital, ArrowRight, Search, Phone, Share2, FileText, CheckCircle, Megaphone, Info, Package, Globe } from 'lucide-react';
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  
+  const [
+    { count: refugiosCount },
+    { count: acopioCount },
+    { count: exteriorCount }
+  ] = await Promise.all([
+    supabase.from('refugios').select('*', { count: 'exact', head: true }),
+    supabase.from('centros_acopio').select('*', { count: 'exact', head: true }),
+    supabase.from('centros_acopio_exterior').select('*', { count: 'exact', head: true })
+  ]);
+
   return (
     <main className="min-h-screen bg-[#0f172a] text-white py-12 px-4 md:py-20 pb-24 md:pb-16 flex flex-col items-center">
       <div className="max-w-4xl w-full flex flex-col gap-16">
@@ -15,9 +28,24 @@ export default function Home() {
           <p className="text-white/70 text-base leading-relaxed mb-2">
             Coordinación ciudadana en respuesta al terremoto en Venezuela.
           </p>
-          <p className="text-white/40 text-xs tracking-wider uppercase mb-10 font-semibold">
+          <p className="text-white/40 text-xs tracking-wider uppercase mb-8 font-semibold">
             Sismo del 24 de junio, 2026
           </p>
+
+          <div className="flex flex-wrap justify-center gap-4 mb-10">
+            <div className="bg-[#1e293b]/60 border border-white/5 rounded-2xl px-5 py-4 text-center min-w-[120px]">
+              <div className="text-3xl font-black text-emerald-400 mb-1">{refugiosCount ?? 0}</div>
+              <div className="text-white/50 text-[10px] uppercase tracking-wider font-bold">Refugios<br/>Reportados</div>
+            </div>
+            <div className="bg-[#1e293b]/60 border border-white/5 rounded-2xl px-5 py-4 text-center min-w-[120px]">
+              <div className="text-3xl font-black text-[#f1c40f] mb-1">{acopioCount ?? 0}</div>
+              <div className="text-white/50 text-[10px] uppercase tracking-wider font-bold">Centros<br/>Nacionales</div>
+            </div>
+            <div className="bg-[#1e293b]/60 border border-white/5 rounded-2xl px-5 py-4 text-center min-w-[120px]">
+              <div className="text-3xl font-black text-[#3498db] mb-1">{exteriorCount ?? 0}</div>
+              <div className="text-white/50 text-[10px] uppercase tracking-wider font-bold">Centros<br/>Exterior</div>
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
             {/* Card 1: Refugios */}
@@ -80,17 +108,34 @@ export default function Home() {
             >
               <div>
                 <Package size={24} className="text-[#f1c40f] mb-3" />
-                <h2 className="text-white font-bold text-lg mb-1">Centros de Acopio</h2>
+                <h2 className="text-white font-bold text-lg mb-1">Centros de Acopio Nacional</h2>
                 <p className="text-white/50 text-xs md:text-sm leading-relaxed">
-                  Puntos habilitados para recibir y distribuir ayuda. Repórtalo si conoces uno.
+                  Puntos habilitados para recibir y distribuir ayuda en Venezuela.
                 </p>
               </div>
               <div className="flex items-center gap-1 text-[#f1c40f] text-xs md:text-sm font-semibold mt-4 group-hover:gap-2 transition-all">
-                Ver centros <ArrowRight size={14} />
+                Ver centros nacionales <ArrowRight size={14} />
               </div>
             </Link>
 
-            {/* Card 5: Emergencias
+            {/* Card 5: Ayuda Exterior */}
+            <Link
+              href="/ayuda-exterior"
+              className="group bg-[#1e293b] border border-white/10 hover:border-[#3498db]/50 rounded-2xl p-5 transition-all hover:scale-[1.01] shadow-lg flex flex-col justify-between"
+            >
+              <div>
+                <Globe size={24} className="text-[#3498db] mb-3" />
+                <h2 className="text-white font-bold text-lg mb-1">Ayuda en el Exterior</h2>
+                <p className="text-white/50 text-xs md:text-sm leading-relaxed">
+                  Puntos de acopio de la diáspora en diferentes ciudades del mundo.
+                </p>
+              </div>
+              <div className="flex items-center gap-1 text-[#3498db] text-xs md:text-sm font-semibold mt-4 group-hover:gap-2 transition-all">
+                Ver ayuda global <ArrowRight size={14} />
+              </div>
+            </Link>
+
+            {/* Card 6: Emergencias */}
             <Link
               href="/emergencias"
               className="group bg-[#1e293b] border border-white/10 hover:border-[#DC143C]/50 rounded-2xl p-5 transition-all hover:scale-[1.01] shadow-lg flex flex-col justify-between"
@@ -106,7 +151,6 @@ export default function Home() {
                 Ver líneas <ArrowRight size={14} />
               </div>
             </Link>
-            */}
           </div>
         </section>
 
@@ -180,14 +224,12 @@ export default function Home() {
                       <span className="font-bold text-white">Centros de acopio</span> — puntos habilitados para recibir y distribuir ayuda. Si conoces uno, publícalo en segundos para que más personas puedan acceder.
                     </p>
                   </li>
-                  {/*
                   <li className="flex items-start gap-3">
                     <Phone className="text-[#DC143C] shrink-0 mt-0.5" size={18} />
                     <p className="text-white/85 text-xs md:text-sm leading-relaxed">
                       <span className="font-bold text-white">Llamar directamente</span> — todos los números de emergencia, ambulancias y bomberos de Venezuela en un solo lugar, tappables desde el teléfono.
                     </p>
                   </li>
-                  */}
                 </ul>
               </div>
             </div>

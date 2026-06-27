@@ -1,6 +1,7 @@
 'use client';
 
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { CentroAcopioExterior } from '@/lib/types';
@@ -33,15 +34,76 @@ function createAcopioIcon(verificado: boolean) {
   });
 }
 
-interface Props {
-  centros: CentroAcopioExterior[];
+function createUserLocationIcon() {
+  return L.divIcon({
+    html: `<div style="position:relative;width:24px;height:24px;">
+      <div style="
+        position:absolute;inset:0;
+        background:rgba(52,152,219,0.25);
+        border-radius:50%;
+        animation:ping 1.5s cubic-bezier(0,0,0.2,1) infinite;
+      "></div>
+      <div style="
+        position:absolute;top:50%;left:50%;
+        transform:translate(-50%,-50%);
+        width:14px;height:14px;
+        background:#3498db;
+        border-radius:50%;
+        border:2.5px solid white;
+        box-shadow:0 2px 8px rgba(0,0,0,0.4);
+      "></div>
+    </div>
+    <style>
+      @keyframes ping {
+        75%,100%{transform:scale(2);opacity:0}
+      }
+    </style>`,
+    className: '',
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+    popupAnchor: [0, -14],
+  });
 }
 
-// Center of the world to give a global view
+// Auto-zoom/pan to fit all visible markers + user location
+function MapAutoZoom({
+  centros,
+  userLocation,
+}: {
+  centros: CentroAcopioExterior[];
+  userLocation?: { lat: number; lng: number };
+}) {
+  const map = useMap();
+
+  useEffect(() => {
+    const points: [number, number][] = [];
+    centros.forEach((c) => {
+      if (c.lat != null && c.lng != null) points.push([Number(c.lat), Number(c.lng)]);
+    });
+    if (userLocation) points.push([userLocation.lat, userLocation.lng]);
+
+    if (points.length === 0) return;
+    if (points.length === 1) {
+      map.setView(points[0], 10, { animate: true });
+    } else {
+      const bounds = L.latLngBounds(points);
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 12, animate: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [centros, userLocation]);
+
+  return null;
+}
+
+interface Props {
+  centros: CentroAcopioExterior[];
+  userLocation?: { lat: number; lng: number };
+}
+
 const GLOBAL_CENTER: [number, number] = [20.0, 0.0];
 const GLOBAL_ZOOM = 2;
 
-export default function MapaCentrosAcopioExterior({ centros }: Props) {
+export default function MapaCentrosAcopioExterior({ centros, userLocation }: Props) {
   return (
     <MapContainer
       center={GLOBAL_CENTER}
@@ -52,6 +114,24 @@ export default function MapaCentrosAcopioExterior({ centros }: Props) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+
+      <MapAutoZoom centros={centros} userLocation={userLocation} />
+
+      {/* User location marker */}
+      {userLocation && (
+        <Marker
+          position={[userLocation.lat, userLocation.lng]}
+          icon={createUserLocationIcon()}
+          zIndexOffset={1000}
+        >
+          <Popup maxWidth={200}>
+            <div className="font-sans text-sm">
+              <strong className="text-gray-900">📍 Tu ubicación</strong>
+              <p className="text-gray-500 text-xs mt-1">Centros ordenados por cercanía a ti</p>
+            </div>
+          </Popup>
+        </Marker>
+      )}
 
       {centros.filter((c) => c.lat != null && c.lng != null).map((c) => (
         <Marker

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import dynamic from 'next/dynamic';
-import { Globe, MapPin, CheckCircle, Clock, Loader2, AlertCircle, Heart, ChevronDown } from 'lucide-react';
+import { Globe, MapPin, CheckCircle, Loader2, AlertCircle, Heart, ChevronDown, Navigation2, Search, Share2, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { Toaster } from 'sonner';
 import { createClient } from '@/lib/supabase/client';
@@ -24,6 +24,17 @@ const MapaCentrosAcopioExterior = dynamic(
 const PAISES_COMUNES = [
   'Afganistán', 'Albania', 'Alemania', 'Andorra', 'Angola', 'Antigua y Barbuda', 'Arabia Saudita', 'Argelia', 'Argentina', 'Armenia', 'Australia', 'Austria', 'Azerbaiyán', 'Bahamas', 'Bangladés', 'Barbados', 'Baréin', 'Bélgica', 'Belice', 'Benín', 'Bielorrusia', 'Birmania', 'Bolivia', 'Bosnia y Herzegovina', 'Botsuana', 'Brasil', 'Brunéi', 'Bulgaria', 'Burkina Faso', 'Burundi', 'Bután', 'Cabo Verde', 'Camboya', 'Camerún', 'Canadá', 'Catar', 'Chad', 'Chile', 'China', 'Chipre', 'Ciudad del Vaticano', 'Colombia', 'Comoras', 'Corea del Norte', 'Corea del Sur', 'Costa de Marfil', 'Costa Rica', 'Croacia', 'Cuba', 'Dinamarca', 'Dominica', 'Ecuador', 'Egipto', 'El Salvador', 'Emiratos Árabes Unidos', 'Eritrea', 'Eslovaquia', 'Eslovenia', 'España', 'Estados Unidos', 'Estonia', 'Etiopía', 'Filipinas', 'Finlandia', 'Fiyi', 'Francia', 'Gabón', 'Gambia', 'Georgia', 'Ghana', 'Granada', 'Grecia', 'Guatemala', 'Guyana', 'Guinea', 'Guinea ecuatorial', 'Guinea-Bisáu', 'Haití', 'Honduras', 'Hungría', 'India', 'Indonesia', 'Irak', 'Irán', 'Irlanda', 'Islandia', 'Islas Marshall', 'Islas Salomón', 'Israel', 'Italia', 'Jamaica', 'Japón', 'Jordania', 'Kazajistán', 'Kenia', 'Kirguistán', 'Kiribati', 'Kuwait', 'Laos', 'Lesoto', 'Letonia', 'Líbano', 'Liberia', 'Libia', 'Liechtenstein', 'Lituania', 'Luxemburgo', 'Macedonia del Norte', 'Madagascar', 'Malasia', 'Malaui', 'Maldivas', 'Malí', 'Malta', 'Marruecos', 'Mauricio', 'Mauritania', 'México', 'Micronesia', 'Moldavia', 'Mónaco', 'Mongolia', 'Montenegro', 'Mozambique', 'Namibia', 'Nauru', 'Nepal', 'Nicaragua', 'Níger', 'Nigeria', 'Noruega', 'Nueva Zelanda', 'Omán', 'Países Bajos', 'Pakistán', 'Palaos', 'Panamá', 'Papúa Nueva Guinea', 'Paraguay', 'Perú', 'Polonia', 'Portugal', 'Reino Unido', 'República Centroafricana', 'República Checa', 'República del Congo', 'República Democrática del Congo', 'República Dominicana', 'Ruanda', 'Rumanía', 'Rusia', 'Samoa', 'San Cristóbal y Nieves', 'San Marino', 'San Vicente y las Granadinas', 'Santa Lucía', 'Santo Tomé y Príncipe', 'Senegal', 'Serbia', 'Seychelles', 'Sierra Leona', 'Singapur', 'Siria', 'Somalia', 'Sri Lanka', 'Suazilandia', 'Sudáfrica', 'Sudán', 'Sudán del Sur', 'Suecia', 'Suiza', 'Surinam', 'Tailandia', 'Tanzania', 'Tayikistán', 'Timor Oriental', 'Togo', 'Tonga', 'Trinidad y Tobago', 'Túnez', 'Turkmenistán', 'Turquía', 'Tuvalu', 'Ucrania', 'Uganda', 'Uruguay', 'Uzbekistán', 'Vanuatu', 'Venezuela', 'Vietnam', 'Yemen', 'Yibuti', 'Zambia', 'Zimbabue', 'Otro'
 ];
+
+function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371;
+  const toRad = (v: number) => (v * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
 
 export default function AyudaExteriorPage() {
   const [centros, setCentros] = useState<CentroAcopioExterior[]>([]);
@@ -48,6 +59,9 @@ export default function AyudaExteriorPage() {
   // Filter state
   const [filtroPais, setFiltroPais] = useState('');
   const [filtroCiudad, setFiltroCiudad] = useState('');
+  const [textSearch, setTextSearch] = useState('');
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [loadingLocation, setLoadingLocation] = useState(false);
 
   const fetchCentros = useCallback(async () => {
     const supabase = createClient();
@@ -84,6 +98,40 @@ export default function AyudaExteriorPage() {
       },
       { timeout: 10000 }
     );
+  };
+
+  const handleBuscarCercanos = () => {
+    if (!navigator.geolocation) {
+      toast.error('Tu navegador no soporta geolocalización.');
+      return;
+    }
+    setLoadingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setLoadingLocation(false);
+        toast.success('Ubicación detectada — centros ordenados por cercanía.');
+      },
+      () => {
+        setLoadingLocation(false);
+        toast.error('No se pudo obtener tu ubicación.');
+      },
+      { timeout: 10000 }
+    );
+  };
+
+  const handleShare = (c: CentroAcopioExterior) => {
+    const text = `📦 *${c.nombre}*\n📍 ${c.direccion}, ${c.ciudad}, ${c.pais}${
+      c.que_donar ? `\n❤️ Donar: ${c.que_donar}` : ''
+    }${c.notas ? `\n📝 ${c.notas}` : ''}`;
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      navigator.share({ title: c.nombre, text }).catch(() => {});
+    } else {
+      navigator.clipboard
+        .writeText(text)
+        .then(() => toast.success('¡Info copiada al portapapeles!'))
+        .catch(() => {});
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -140,23 +188,54 @@ export default function AyudaExteriorPage() {
     'w-full bg-[#0f172a] border border-white/10 text-white text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#f1c40f]/60 placeholder-white/30 transition-all';
   const labelClass = 'block text-xs font-semibold text-white/60 mb-1.5 uppercase tracking-wider';
 
-  // Obtener lista única de países y ciudades para los filtros
-  const paisesUnicos = useMemo(() => Array.from(new Set(centros.map(c => c.pais))).sort(), [centros]);
+  // Países con conteo para el selector de filtros
+  const paisesConConteo = useMemo(() => {
+    const counts: Record<string, number> = {};
+    centros.forEach((c) => { counts[c.pais] = (counts[c.pais] || 0) + 1; });
+    return Object.entries(counts).sort(([a], [b]) => a.localeCompare(b, 'es'));
+  }, [centros]);
+
   const ciudadesUnicas = useMemo(() => {
     let filtrados = centros;
-    if (filtroPais) {
-      filtrados = filtrados.filter(c => c.pais === filtroPais);
-    }
-    return Array.from(new Set(filtrados.map(c => c.ciudad))).sort();
+    if (filtroPais) filtrados = filtrados.filter((c) => c.pais === filtroPais);
+    return Array.from(new Set(filtrados.map((c) => c.ciudad))).sort((a, b) =>
+      a.localeCompare(b, 'es')
+    );
   }, [centros, filtroPais]);
 
   const centrosFiltrados = useMemo(() => {
-    return centros.filter(c => {
+    let filtrados = centros.filter((c) => {
       if (filtroPais && c.pais !== filtroPais) return false;
       if (filtroCiudad && c.ciudad !== filtroCiudad) return false;
+      if (textSearch) {
+        const q = textSearch.toLowerCase();
+        if (
+          !c.nombre.toLowerCase().includes(q) &&
+          !c.direccion.toLowerCase().includes(q) &&
+          !c.ciudad.toLowerCase().includes(q) &&
+          !c.pais.toLowerCase().includes(q)
+        )
+          return false;
+      }
       return true;
     });
-  }, [centros, filtroPais, filtroCiudad]);
+
+    if (userLocation) {
+      filtrados = filtrados.slice().sort((a, b) => {
+        const dA =
+          a.lat != null && a.lng != null
+            ? haversineKm(userLocation.lat, userLocation.lng, Number(a.lat), Number(a.lng))
+            : Infinity;
+        const dB =
+          b.lat != null && b.lng != null
+            ? haversineKm(userLocation.lat, userLocation.lng, Number(b.lat), Number(b.lng))
+            : Infinity;
+        return dA - dB;
+      });
+    }
+
+    return filtrados;
+  }, [centros, filtroPais, filtroCiudad, textSearch, userLocation]);
 
 
   return (
@@ -197,8 +276,44 @@ export default function AyudaExteriorPage() {
         
         {/* Filtros */}
         <section className="bg-[#1e293b] p-4 rounded-xl border border-white/10">
-          <h2 className="text-sm font-bold text-white mb-3">Filtrar resultados</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-bold text-white">Filtrar resultados</h2>
+            {(filtroPais || filtroCiudad || textSearch || userLocation) && (
+              <button
+                onClick={() => {
+                  setFiltroPais('');
+                  setFiltroCiudad('');
+                  setTextSearch('');
+                  setUserLocation(null);
+                }}
+                className="text-xs text-white/40 hover:text-white flex items-center gap-1 transition-colors"
+              >
+                <X size={12} /> Limpiar todo
+              </button>
+            )}
+          </div>
+
+          {/* Búsqueda por texto */}
+          <div className="relative mb-3">
+            <Search size={14} className="absolute left-3 top-3 text-white/30 pointer-events-none" />
+            <input
+              type="text"
+              value={textSearch}
+              onChange={(e) => setTextSearch(e.target.value)}
+              placeholder="Buscar por nombre, ciudad, dirección..."
+              className={`${inputClass} pl-9 ${textSearch ? 'pr-9' : ''}`}
+            />
+            {textSearch && (
+              <button
+                onClick={() => setTextSearch('')}
+                className="absolute right-3 top-3 text-white/30 hover:text-white/70 transition-colors"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
             <div>
               <label className={labelClass}>País</label>
               <div className="relative">
@@ -206,13 +321,15 @@ export default function AyudaExteriorPage() {
                   value={filtroPais}
                   onChange={(e) => {
                     setFiltroPais(e.target.value);
-                    setFiltroCiudad(''); // Reset city when country changes
+                    setFiltroCiudad('');
                   }}
                   className={`${inputClass} appearance-none pr-10`}
                 >
                   <option value="">Todos los países</option>
-                  {paisesUnicos.map((p) => (
-                    <option key={p} value={p}>{p}</option>
+                  {paisesConConteo.map(([p, count]) => (
+                    <option key={p} value={p}>
+                      {p} ({count})
+                    </option>
                   ))}
                 </select>
                 <ChevronDown size={16} className="absolute right-3 top-3 text-white/40 pointer-events-none" />
@@ -224,17 +341,42 @@ export default function AyudaExteriorPage() {
                 <select
                   value={filtroCiudad}
                   onChange={(e) => setFiltroCiudad(e.target.value)}
-                  className={`${inputClass} appearance-none pr-10`}
+                  disabled={!filtroPais}
+                  className={`${inputClass} appearance-none pr-10 disabled:opacity-40 disabled:cursor-not-allowed`}
                 >
-                  <option value="">Todas las ciudades</option>
+                  <option value="">
+                    {filtroPais ? 'Todas las ciudades' : 'Elige un país primero'}
+                  </option>
                   {ciudadesUnicas.map((c) => (
-                    <option key={c} value={c}>{c}</option>
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
                   ))}
                 </select>
                 <ChevronDown size={16} className="absolute right-3 top-3 text-white/40 pointer-events-none" />
               </div>
             </div>
           </div>
+
+          {/* Geolocalización */}
+          <button
+            type="button"
+            onClick={handleBuscarCercanos}
+            disabled={loadingLocation}
+            className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border text-sm font-semibold transition-all disabled:opacity-50 ${
+              userLocation
+                ? 'bg-[#2ecc71]/10 border-[#2ecc71]/30 text-[#2ecc71] cursor-default'
+                : 'bg-[#3498db]/10 border-[#3498db]/30 text-[#3498db] hover:bg-[#3498db]/20'
+            }`}
+          >
+            {loadingLocation ? (
+              <><Loader2 size={14} className="animate-spin" /> Detectando ubicación...</>
+            ) : userLocation ? (
+              <><Navigation2 size={14} /> Ubicación activa — ordenados por cercanía</>
+            ) : (
+              <><Navigation2 size={14} /> Buscar centros cerca de mí</>
+            )}
+          </button>
         </section>
 
         {/* Map */}
@@ -249,7 +391,7 @@ export default function AyudaExteriorPage() {
                 <span className="text-sm">Cargando centros globales...</span>
               </div>
             ) : (
-              <MapaCentrosAcopioExterior centros={centrosFiltrados} />
+              <MapaCentrosAcopioExterior centros={centrosFiltrados} userLocation={userLocation ?? undefined} />
             )}
           </div>
         </section>
@@ -548,17 +690,26 @@ export default function AyudaExteriorPage() {
                   {c.notas && (
                     <p className="text-white/50 text-xs italic mt-1 relative z-10 border-l-2 border-white/10 pl-2">{c.notas}</p>
                   )}
-                  {c.lat != null && c.lng != null && (
-                    <a
-                      href={`https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lng}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-3 inline-flex items-center gap-1.5 bg-[#3498db]/15 text-[#3498db] hover:bg-[#3498db] hover:text-white text-xs font-bold px-3.5 py-2 rounded-lg transition-all duration-300 self-start relative z-10"
+                  <div className="mt-3 flex flex-wrap gap-2 relative z-10">
+                    {c.lat != null && c.lng != null && (
+                      <a
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lng}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 bg-[#3498db]/15 text-[#3498db] hover:bg-[#3498db] hover:text-white text-xs font-bold px-3.5 py-2 rounded-lg transition-all duration-300"
+                      >
+                        <MapPin size={14} />
+                        Ver cómo llegar
+                      </a>
+                    )}
+                    <button
+                      onClick={() => handleShare(c)}
+                      className="inline-flex items-center gap-1.5 bg-white/5 text-white/50 hover:bg-white/10 hover:text-white text-xs font-bold px-3.5 py-2 rounded-lg transition-all duration-300"
                     >
-                      <MapPin size={14} />
-                      Ver cómo llegar
-                    </a>
-                  )}
+                      <Share2 size={14} />
+                      Compartir
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
