@@ -107,10 +107,32 @@ export default function AyudaExteriorPage() {
     }
     setLoadingLocation(true);
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        setUserLocation({ lat, lng });
+        
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=3&addressdetails=1&accept-language=es`,
+            { headers: { 'User-Agent': 'RefugioVE/1.0 (refugiove.app@outlook.com)' } }
+          );
+          if (res.ok) {
+            const data = await res.json();
+            let country = data.address?.country;
+            if (country) {
+              if (country === 'EE. UU.') country = 'Estados Unidos';
+              if (country === 'Reino Unido de Gran Bretaña e Irlanda del Norte') country = 'Reino Unido';
+              setFiltroPais(country);
+              setFiltroCiudad('');
+            }
+          }
+        } catch (err) {
+          console.error('Error reverse geocoding:', err);
+        }
+
         setLoadingLocation(false);
-        toast.success('Ubicación detectada — centros ordenados por cercanía.');
+        toast.success('Ubicación detectada — filtrando por tu país.');
       },
       () => {
         setLoadingLocation(false);
