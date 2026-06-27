@@ -22,9 +22,17 @@ export default async function Home() {
         {/* Hero & Navigation Grid */}
         <section className="text-center max-w-xl mx-auto w-full">
           <div className="text-5xl mb-4">🇻🇪</div>
-          <h1 className="text-white font-extrabold text-3xl md:text-4xl tracking-tight mb-3">
+          <h1 className="text-white font-extrabold text-4xl md:text-5xl tracking-tight mb-6 relative inline-block">
             RefugioVE
+            <div className="absolute -bottom-2.5 left-0 w-full h-1.5 rounded-full flex overflow-hidden">
+              <div className="h-full bg-[#f1c40f] w-1/3"></div>
+              <div className="h-full bg-[#3498db] w-1/3"></div>
+              <div className="h-full bg-[#e74c3c] w-1/3"></div>
+            </div>
           </h1>
+          <div className="flex justify-center gap-1 mb-5 text-white/30 text-xs">
+            {'★★★★★★★★'.split('').map((star, i) => <span key={i}>{star}</span>)}
+          </div>
           <p className="text-white/70 text-base leading-relaxed mb-2">
             Coordinación ciudadana en respuesta al terremoto en Venezuela.
           </p>
@@ -33,34 +41,37 @@ export default async function Home() {
           </p>
 
           <div className="flex flex-wrap justify-center gap-4 mb-10">
-            <div className="bg-[#1e293b]/60 border border-white/5 rounded-2xl px-5 py-4 text-center min-w-[120px]">
-              <div className="text-3xl font-black text-emerald-400 mb-1">{refugiosCount ?? 0}</div>
-              <div className="text-white/50 text-[10px] uppercase tracking-wider font-bold">Refugios<br/>Reportados</div>
+            <div className="bg-[#1e293b]/60 border border-white/5 rounded-2xl px-5 py-4 text-center min-w-[120px] relative overflow-hidden group hover:border-[#f1c40f]/30 transition-colors">
+              <div className="absolute top-0 left-0 w-full h-1 bg-[#f1c40f]" />
+              <div className="text-3xl font-black text-[#f1c40f] mb-1">{refugiosCount ?? 0}</div>
+              <div className="text-white/60 text-[10px] uppercase tracking-wider font-bold">Refugios<br/>Reportados</div>
             </div>
-            <div className="bg-[#1e293b]/60 border border-white/5 rounded-2xl px-5 py-4 text-center min-w-[120px]">
-              <div className="text-3xl font-black text-[#f1c40f] mb-1">{acopioCount ?? 0}</div>
-              <div className="text-white/50 text-[10px] uppercase tracking-wider font-bold">Centros<br/>Nacionales</div>
+            <div className="bg-[#1e293b]/60 border border-white/5 rounded-2xl px-5 py-4 text-center min-w-[120px] relative overflow-hidden group hover:border-[#3498db]/30 transition-colors">
+              <div className="absolute top-0 left-0 w-full h-1 bg-[#3498db]" />
+              <div className="text-3xl font-black text-[#3498db] mb-1">{acopioCount ?? 0}</div>
+              <div className="text-white/60 text-[10px] uppercase tracking-wider font-bold">Centros<br/>Nacionales</div>
             </div>
-            <div className="bg-[#1e293b]/60 border border-white/5 rounded-2xl px-5 py-4 text-center min-w-[120px]">
-              <div className="text-3xl font-black text-[#3498db] mb-1">{exteriorCount ?? 0}</div>
-              <div className="text-white/50 text-[10px] uppercase tracking-wider font-bold">Centros<br/>Exterior</div>
+            <div className="bg-[#1e293b]/60 border border-white/5 rounded-2xl px-5 py-4 text-center min-w-[120px] relative overflow-hidden group hover:border-[#e74c3c]/30 transition-colors">
+              <div className="absolute top-0 left-0 w-full h-1 bg-[#e74c3c]" />
+              <div className="text-3xl font-black text-[#e74c3c] mb-1">{exteriorCount ?? 0}</div>
+              <div className="text-white/60 text-[10px] uppercase tracking-wider font-bold">Centros<br/>Exterior</div>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
-            {/* Card 1: Refugios */}
+            {/* Card 1: Refugios (Amarillo) */}
             <Link
               href="/mapa"
-              className="group bg-[#1e293b] border border-white/10 hover:border-[#DC143C]/50 rounded-2xl p-5 transition-all hover:scale-[1.01] shadow-lg flex flex-col justify-between"
+              className="group bg-[#1e293b] border border-white/10 hover:border-[#f1c40f]/50 rounded-2xl p-5 transition-all hover:scale-[1.01] shadow-lg flex flex-col justify-between"
             >
               <div>
-                <MapPin size={24} className="text-emerald-400 mb-3" />
+                <MapPin size={24} className="text-[#f1c40f] mb-3" />
                 <h2 className="text-white font-bold text-lg mb-1">Mapa de Refugios</h2>
                 <p className="text-white/50 text-xs md:text-sm leading-relaxed">
                   Ver y reportar albergues y puntos de evacuación activos cerca de ti.
                 </p>
               </div>
-              <div className="flex items-center gap-1 text-[#DC143C] text-xs md:text-sm font-semibold mt-4 group-hover:gap-2 transition-all">
+              <div className="flex items-center gap-1 text-[#f1c40f] text-xs md:text-sm font-semibold mt-4 group-hover:gap-2 transition-all">
                 Ver mapa <ArrowRight size={14} />
               </div>
             </Link>
@@ -101,36 +112,36 @@ export default async function Home() {
             </Link>
             */}
 
-            {/* Card 4: Centros de Acopio */}
+            {/* Card 4: Centros de Acopio (Azul) */}
             <Link
               href="/centros-acopio"
-              className="group bg-[#1e293b] border border-white/10 hover:border-[#f1c40f]/50 rounded-2xl p-5 transition-all hover:scale-[1.01] shadow-lg flex flex-col justify-between"
+              className="group bg-[#1e293b] border border-white/10 hover:border-[#3498db]/50 rounded-2xl p-5 transition-all hover:scale-[1.01] shadow-lg flex flex-col justify-between"
             >
               <div>
-                <Package size={24} className="text-[#f1c40f] mb-3" />
+                <Package size={24} className="text-[#3498db] mb-3" />
                 <h2 className="text-white font-bold text-lg mb-1">Centros de Acopio Nacional</h2>
                 <p className="text-white/50 text-xs md:text-sm leading-relaxed">
                   Puntos habilitados para recibir y distribuir ayuda en Venezuela.
                 </p>
               </div>
-              <div className="flex items-center gap-1 text-[#f1c40f] text-xs md:text-sm font-semibold mt-4 group-hover:gap-2 transition-all">
+              <div className="flex items-center gap-1 text-[#3498db] text-xs md:text-sm font-semibold mt-4 group-hover:gap-2 transition-all">
                 Ver centros nacionales <ArrowRight size={14} />
               </div>
             </Link>
 
-            {/* Card 5: Ayuda Exterior */}
+            {/* Card 5: Ayuda Exterior (Rojo) */}
             <Link
               href="/ayuda-exterior"
-              className="group bg-[#1e293b] border border-white/10 hover:border-[#3498db]/50 rounded-2xl p-5 transition-all hover:scale-[1.01] shadow-lg flex flex-col justify-between"
+              className="group bg-[#1e293b] border border-white/10 hover:border-[#e74c3c]/50 rounded-2xl p-5 transition-all hover:scale-[1.01] shadow-lg flex flex-col justify-between"
             >
               <div>
-                <Globe size={24} className="text-[#3498db] mb-3" />
+                <Globe size={24} className="text-[#e74c3c] mb-3" />
                 <h2 className="text-white font-bold text-lg mb-1">Ayuda en el Exterior</h2>
                 <p className="text-white/50 text-xs md:text-sm leading-relaxed">
                   Puntos de acopio de la diáspora en diferentes ciudades del mundo.
                 </p>
               </div>
-              <div className="flex items-center gap-1 text-[#3498db] text-xs md:text-sm font-semibold mt-4 group-hover:gap-2 transition-all">
+              <div className="flex items-center gap-1 text-[#e74c3c] text-xs md:text-sm font-semibold mt-4 group-hover:gap-2 transition-all">
                 Ver ayuda global <ArrowRight size={14} />
               </div>
             </Link>
@@ -138,16 +149,16 @@ export default async function Home() {
             {/* Card 6: Emergencias */}
             <Link
               href="/emergencias"
-              className="group bg-[#1e293b] border border-white/10 hover:border-[#DC143C]/50 rounded-2xl p-5 transition-all hover:scale-[1.01] shadow-lg flex flex-col justify-between"
+              className="group bg-[#1e293b] border border-white/10 hover:border-white/50 rounded-2xl p-5 transition-all hover:scale-[1.01] shadow-lg flex flex-col justify-between"
             >
               <div>
-                <Phone size={24} className="text-[#DC143C] mb-3" />
+                <Phone size={24} className="text-white/80 mb-3" />
                 <h2 className="text-white font-bold text-lg mb-1">Líneas de Emergencia</h2>
                 <p className="text-white/50 text-xs md:text-sm leading-relaxed">
                   Números de Protección Civil, bomberos, operadoras y radio AM.
                 </p>
               </div>
-              <div className="flex items-center gap-1 text-[#DC143C] text-xs md:text-sm font-semibold mt-4 group-hover:gap-2 transition-all">
+              <div className="flex items-center gap-1 text-white/80 text-xs md:text-sm font-semibold mt-4 group-hover:gap-2 transition-all">
                 Ver líneas <ArrowRight size={14} />
               </div>
             </Link>
@@ -193,13 +204,13 @@ export default async function Home() {
                 </h3>
                 <ul className="space-y-4">
                   <li className="flex items-start gap-3">
-                    <MapPin className="text-emerald-400 shrink-0 mt-0.5" size={18} />
+                    <MapPin className="text-[#f1c40f] shrink-0 mt-0.5" size={18} />
                     <p className="text-white/85 text-xs md:text-sm leading-relaxed">
                       <span className="font-bold text-white">Encontrar un refugio cercano</span> — mapa interactivo con albergues reportados por ciudadanos, con información de capacidad, servicios disponibles y estado actual.
                     </p>
                   </li>
                   <li className="flex items-start gap-3">
-                    <Megaphone className="text-sky-400 shrink-0 mt-0.5" size={18} />
+                    <Megaphone className="text-[#3498db] shrink-0 mt-0.5" size={18} />
                     <p className="text-white/85 text-xs md:text-sm leading-relaxed">
                       <span className="font-bold text-white">Reportar un refugio</span> — si conoces un punto habilitado para recibir familias, publícalo en segundos para que otros lo encuentren.
                     </p>
@@ -219,13 +230,19 @@ export default async function Home() {
                   </li>
                   */}
                   <li className="flex items-start gap-3">
-                    <Package className="text-[#f1c40f] shrink-0 mt-0.5" size={18} />
+                    <Package className="text-[#3498db] shrink-0 mt-0.5" size={18} />
                     <p className="text-white/85 text-xs md:text-sm leading-relaxed">
-                      <span className="font-bold text-white">Centros de acopio</span> — puntos habilitados para recibir y distribuir ayuda. Si conoces uno, publícalo en segundos para que más personas puedan acceder.
+                      <span className="font-bold text-white">Centros de acopio nacionales</span> — puntos habilitados en Venezuela para distribuir ayuda.
                     </p>
                   </li>
                   <li className="flex items-start gap-3">
-                    <Phone className="text-[#DC143C] shrink-0 mt-0.5" size={18} />
+                    <Globe className="text-[#e74c3c] shrink-0 mt-0.5" size={18} />
+                    <p className="text-white/85 text-xs md:text-sm leading-relaxed">
+                      <span className="font-bold text-white">Ayuda en el exterior</span> — acopios coordinados por la diáspora a nivel global.
+                    </p>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Phone className="text-white/80 shrink-0 mt-0.5" size={18} />
                     <p className="text-white/85 text-xs md:text-sm leading-relaxed">
                       <span className="font-bold text-white">Llamar directamente</span> — todos los números de emergencia, ambulancias y bomberos de Venezuela en un solo lugar, tappables desde el teléfono.
                     </p>
